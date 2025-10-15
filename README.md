@@ -68,9 +68,8 @@ Deploy — Realiza o deploy automatizado para os ambientes staging e produção
 
 🧩 Estrutura do workflow
 Local: .github/workflows/ci-cd.yml
+name: CI/CD - Cidades ESG
    ```bash
-  name: CI/CD - Cidades ESG
-
   on:
     push:
       branches: [ main ]
@@ -89,6 +88,63 @@ Local: .github/workflows/ci-cd.yml
         run: mvn clean package -DskipTests
       - name: Construir imagem Docker
         run: docker build -t cidades-esg .
+```
+________________________________
 
-_________________________________
 ## 🐋 Containerização
+📦 Dockerfile
+```bash
+# Etapa 1: Build
+FROM maven:3.9.6-eclipse-temurin-21 AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
+
+# Etapa 2: Execução
+FROM eclipse-temurin:21-jdk
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
+```
+
+🔗 docker-compose.yml
+```bash
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:testdb
+      - SPRING_PROFILES_ACTIVE=dev
+```
+________________________________
+
+## 🧱 Tecnologias Utilizadas
+| Categoria                     | Ferramenta     |
+| ----------------------------- | -------------- |
+| Linguagem                     | Java 21        |
+| Framework                     | Spring Boot    |
+| Banco de Dados                | H2 Database    |
+| Containerização               | Docker         |
+| Orquestração                  | Docker Compose |
+| CI/CD                         | GitHub Actions |
+| Gerenciamento de Dependências | Maven          |
+________________________________
+
+## 🧾 Checklist de Entrega
+| Item                                                | OK |
+| --------------------------------------------------- | -- |
+| Projeto compactado em .ZIP com estrutura organizada | ✅  |
+| Dockerfile funcional                                | ✅  |
+| docker-compose.yml ou arquivos Kubernetes           | ✅  |
+| Pipeline com etapas de build, teste e deploy        | ✅  |
+| README.md com instruções e prints                   | ✅  |
+| Documentação técnica com evidências (PDF ou PPT)    | ✅  |
+| Deploy realizado nos ambientes staging e produção   | ✅  |
+________________________________
+
+## 🏁 Conclusão
+O projeto Cidades ESG Inteligentes demonstra a integração prática entre desenvolvimento e operações (DevOps), unindo automação, containerização e entrega contínua.
+Através da pipeline configurada e do uso de containers, o ciclo de vida da aplicação se torna ágil, confiável e escalável.
