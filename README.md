@@ -76,7 +76,7 @@ networks:
 ______________________________________
     
 ## 🚀 Pipeline CI/CD
-# 📦 Ferramenta: GitHub Actions
+📦 Ferramenta: GitHub Actions
 
 Local: .github/workflows/ci.yml
 
