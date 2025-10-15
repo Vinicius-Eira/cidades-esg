@@ -1,139 +1,93 @@
-# 🌍 Projeto - Cidades ESG Inteligentes
+# 🌎 Projeto Cidades ESG Inteligentes  
+
+## 🧠 Sobre o Projeto  
+
+O **Cidades ESG Inteligentes** é uma aplicação desenvolvida em **Java Spring Boot**, com o objetivo de promover o monitoramento e gestão de indicadores de sustentabilidade (ESG) em cidades brasileiras.  
+O projeto integra práticas de **DevOps**, com pipeline automatizado, containerização via **Docker** e orquestração com **Docker Compose**, simulando um ambiente de produção real.
+
 ---
 
-## 🧩 Descrição do Projeto
-O projeto **Cidades ESG Inteligentes** tem como objetivo gerenciar informações sobre cidades e seus indicadores ESG — **Ambiental, Social e Governança**.  
-Ele foi desenvolvido em **Java Spring Boot**, e containerizado com **Docker**, integrando um pipeline de **CI/CD no GitHub Actions**, seguindo as práticas DevOps estudadas durante a disciplina.
+## 👥 Equipe  
+
+| Nome | E-mail |
+|------|--------|
+| Vinícius Ribeiro dos Santos Eira | viniciusantos.eira@gmail.com |
+| William Dias Lima | wdlima@gmail.com |
+| Renan Dorneles Barboza Boucault | renandornelesboucault@gmail.com |
+| Carlos Eduardo Silva Dias | dudu.hjcd@gmail.com |
+| Marcelo Guimarães dos Santos | marceloguimaraesdev@gmail.com |
+
+**Organização:** FIAP  
+**Curso:** Engenharia de Software  
+**Fase:** Navegando pelo Mundo DevOps  
 
 ---
 
-⚙️ Como Executar Localmente com Docker
+## 🐳 Como Executar Localmente com Docker  
 
-### 🧱 Pré-requisitos
-- Docker e Docker Compose instalados.
+### 🔧 Pré-requisitos  
+- Docker e Docker Compose instalados  
+- Git instalado  
 
-### ▶️ Passos para rodar:
+### ▶️ Passos para execução  
 
-# 1. Clonar o repositório
-git clone https://github.com/Vinicius-Eira/cidades-esg.git
-cd cidades-esg
+1. Clone o repositório:
+   ```bash
+   git clone https://github.com/Vinicius-Eira/cidades-esg.git
+   cd cidades-esg
 
-# 2. Construir e rodar o container
-docker-compose up --build
+2. Construa e suba os containers:
+   ```bash
+   docker-compose up --build
 
-A aplicação estará disponível em:
--> http://localhost:8080
-______________________________________
+3. Acesse a aplicação:
+🌐 http://localhost:8080
 
-## 🧰 Tecnologias Utilizadas:
+Acesse o banco de dados H2:
+🌐 http://localhost:8080/h2-console
 
--> Backend	Java 21, Spring Boot
--> Build	Maven
--> Banco de Dados	H2 (em memória)
--> Containerização	Docker, Docker Compose
--> CI/CD	GitHub Actions
--> Testes	JUnit, Postman
--> Ferramentas	IntelliJ IDEA, Git, GitHub
+JDBC URL: jdbc:h2:mem:testdb
 
-______________________________________
+Usuário: sa
 
-## 🐳 Containerização
-#  📄 Dockerfile
-FROM maven:3.9.6-eclipse-temurin-21 AS build
-WORKDIR /app
-COPY . .
-RUN mvn clean package -DskipTests
+Senha: (em branco)
 
-FROM eclipse-temurin:21-jdk
-WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
----
-## 📄 docker-compose.yml
-version: '3.8'
-services:
-  cidades-esg:
-    build: .
-    container_name: cidades-esg-app
-    ports:
-      - "8080:8080"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:h2:mem:testdb
-      - SPRING_DATASOURCE_DRIVERCLASSNAME=org.h2.Driver
-      - SPRING_DATASOURCE_USERNAME=sa
-      - SPRING_DATASOURCE_PASSWORD=
-      - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.H2Dialect
-      - SPRING_H2_CONSOLE_ENABLED=true
-      - SPRING_H2_CONSOLE_PATH=/h2-console
-    networks:
-      - cidades-network
+_________________________________
 
-networks:
-  cidades-network:
-    driver: bridge
-______________________________________
-    
-## 🚀 Pipeline CI/CD
-📦 Ferramenta: GitHub Actions
+##⚙️ Pipeline CI/CD
 
-Local: .github/workflows/ci.yml
+O pipeline foi configurado com GitHub Actions, automatizando as seguintes etapas:
 
-O pipeline executa automaticamente as seguintes etapas a cada push ou pull request na branch main:
+Build — Compila o projeto e gera o artefato .jar
 
-Checkout do código
+Testes — Executa os testes automatizados do projeto
 
-Build com Maven
+Docker Build & Push — Gera e publica a imagem Docker
 
-Execução de testes automatizados
+Deploy — Realiza o deploy automatizado para os ambientes staging e produção
 
-Geração do artefato JAR
-
-Build da imagem Docker
-
-Deploy (em ambiente staging e produção)
-
-# 🖼️ Exemplo de workflow:
-
-name: CI/CD Pipeline - Cidades ESG
+🧩 Estrutura do workflow
+Local: .github/workflows/ci-cd.yml
+```bash
+name: CI/CD - Cidades ESG
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout do código
-        uses: actions/checkout@v4
-
-      - name: Configurar JDK 21
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v3
+      - name: Configurar JDK
+        uses: actions/setup-java@v3
         with:
           java-version: '21'
           distribution: 'temurin'
-
-      - name: Compilar projeto
+      - name: Build com Maven
         run: mvn clean package -DskipTests
-
-      - name: Build da imagem Docker
+      - name: Construir imagem Docker
         run: docker build -t cidades-esg .
-
-      - name: Testar execução local
-        run: echo "Build e teste realizados com sucesso!"
-______________________________________
-
-## ✅ Checklist de Entrega
-
-Item	OK
-Projeto compactado em .ZIP	☑️
-Dockerfile funcional	☑️
-docker-compose.yml funcional	☑️
-Pipeline de build/test/deploy	☑️
-README.md completo	☑️
-Documentação técnica (PDF/Word)	☑️
-Aplicação rodando localmente	☑️
-
 
 
