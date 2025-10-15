@@ -46,11 +46,11 @@ O projeto integra práticas de **DevOps**, com pipeline automatizado, containeri
 Acesse o banco de dados H2:
 🌐 http://localhost:8080/h2-console
 
-JDBC URL: jdbc:h2:mem:testdb
+  JDBC URL: jdbc:h2:mem:testdb
 
-Usuário: sa
+  Usuário: sa
 
-Senha: (em branco)
+  Senha: (em branco)
 
 _________________________________
 
@@ -68,21 +68,21 @@ Deploy — Realiza o deploy automatizado para os ambientes staging e produção
 
 🧩 Estrutura do workflow
 Local: .github/workflows/ci-cd.yml
-```bash
-name: CI/CD - Cidades ESG
+   ```bash
+  name: CI/CD - Cidades ESG
 
-on:
-  push:
-    branches: [ main ]
+  on:
+    push:
+      branches: [ main ]
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Configurar JDK
-        uses: actions/setup-java@v3
-        with:
+  jobs:
+    build:
+      runs-on: ubuntu-latest
+      steps:
+       - uses: actions/checkout@v3
+       - name: Configurar JDK
+         uses: actions/setup-java@v3
+         with:
           java-version: '21'
           distribution: 'temurin'
       - name: Build com Maven
@@ -90,4 +90,5 @@ jobs:
       - name: Construir imagem Docker
         run: docker build -t cidades-esg .
 
-
+_________________________________
+## 🐋 Containerização
