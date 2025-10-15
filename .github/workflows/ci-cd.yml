@@ -1,0 +1,39 @@
+name: CI/CD Pipeline - Cidades ESG
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Baixa o repositório
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      # 2️⃣ Configura o Java
+      - name: Configurar Java 23
+        uses: actions/setup-java@v4
+        with:
+          java-version: '23'
+          distribution: 'temurin'
+
+      # 3️⃣ Build do projeto
+      - name: Build com Maven
+        run: mvn clean package -DskipTests
+
+      # 4️⃣ Executa os testes
+      - name: Rodar testes automatizados
+        run: mvn test
+
+      # 5️⃣ Build da imagem Docker
+      - name: Build da imagem Docker
+        run: docker build -t cidades-esg:latest .
+
+      # 6️⃣ Simulação de deploy (print log)
+      - name: Simular deploy
+        run: echo "Deploy realizado com sucesso no ambiente de staging e produção!"
